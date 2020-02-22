@@ -12,7 +12,7 @@ const schema = new mongoSchema({
 	degree: String,
 	description: String,
 	isPublished: Boolean,
-	owner: mongoose.ObjectId
+	owner:[{ type: mongoose.ObjectId, ref: 'User' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

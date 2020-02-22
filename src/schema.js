@@ -1,13 +1,11 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
-	union Result = User | Website
 	
-	interface MutationResponse {
-	  code: String!
-	  success: Boolean!
-	  message: String!
-	}
+	type authPayload {
+		token: String,
+		user: User
+	}	
 	
 	type User {
 		_id: ID
@@ -21,36 +19,30 @@ const typeDefs = gql`
 		country: String
 		bio: String
 		last_login: String
-		website: [Website!]!
-		experience: [Experience!]!
-		education: [Education!]!
 	}
 	
-	type generalResponse implements MutationResponse{
-		code: String!
-		success: Boolean!
-		message: String!
-		result: Result!
-	}
-	
-	input userInput{
+	type UserResponse {
+		_id: ID
 		first_name: String
 		last_name: String
 		email: String
-		password: String
 		image: String
 		phone: String
 		city: String
 		country: String
 		bio: String
+		last_login: String
+		websites: [Website!]!
+		#experience: [Experience!]!
+		#education: [Education!]!
 	}
 	
 	type Website {
 		_id: ID
 		title: String!
 		domain: String!
+		language: String,
 		owner: User!
-		language: String
 	}
 	
 	type Page {
@@ -76,7 +68,7 @@ const typeDefs = gql`
 		isPublished: Boolean 
 		tags: [Tag]
 		#skills: [Skill!]!
-		testimonials: [Testimonial!]!
+		#testimonials: [Testimonial!]!
 		website: Website!
 	}
 	
@@ -91,6 +83,7 @@ const typeDefs = gql`
 		text: String
 		reviewer: Client!
 		isPublished: Boolean
+		project: ID
 		website: Website!
 	}
 	
@@ -111,7 +104,7 @@ const typeDefs = gql`
 		degree: String
 		description: String
 		isPublished: Boolean
-		owner: User!
+		website: Website!
 	}
 	
 	type Experience {
@@ -123,29 +116,33 @@ const typeDefs = gql`
 		is_current: String
 		description: String
 		isPublished: Boolean
-		owner: User!
+		website: Website!
 	}
-	
-	#Experience, Education, Client, Testimonial, Project, Page, Website
-	type Query {
-		me: User!
-		getUsers: [User!]!
-		getEducation(user: ID!): [Education!]!
-		getExperience(user: ID!): [Education!]!
-		getPages(website: ID!): [Page!]!
-		getProjects(website: ID!): [Project!]!
-		getTestimonials(website: ID!): [Project!]!
-		getClients(website: ID!): [Client!]!
 		
-		user(_id: ID!): User!
-		website(_id: ID!): Website!
-		project(_id: ID!): Project
-		testimonial(_id: ID!): Testimonial
+	type Query {
+		me: UserResponse!
+		users: [UserResponse]!
+		education(website: ID): [Education]!
+		experience(website: ID): [Experience]!
+		websites(website: ID): [Website]! #get all website of a user
+		pages(website: ID): [Page]!
+		projects(website: ID!): [Project]!
+		testimonials(website: ID!): [Testimonial]!
+		clients(website: ID!): [Client]!
+		
+		#get followings by ID
+		user(_id: ID!): UserResponse!
+		website(_id: ID!): Website! 
+		project(_id: ID!): Project! 
+		testimonial(_id: ID!): Testimonial! 
+		page(_id: ID!): Page! 
 	}
 
 	type Mutation {
-		user(user: userInput) : generalResponse
-		login(email: String, password: String): String # login token
+		user(_id: ID, first_name: String, last_name: String, email: String, password: String, image: String, phone: String, city: String, country: String, bio: String) : UserResponse
+		website(_id: ID, title: String, domain: String, language: String, owner: ID) : Website
+		register(email: String!, password: String!): UserResponse
+		login(email: String, password: String): authPayload 
 	}
 `;
 

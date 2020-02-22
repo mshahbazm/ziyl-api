@@ -13,8 +13,11 @@ const schema = new mongoSchema({
 		unique: true,
 		required: true
 	},
-	language: String,
-	owner: mongoose.ObjectId
+	language: {
+		type: String,
+		default: 'en'
+	},
+	owner: [{ type: mongoose.ObjectId, ref: 'User' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

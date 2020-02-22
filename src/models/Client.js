@@ -10,7 +10,7 @@ const schema = new mongoSchema({
 	email: String,
 	company: String,
 	isPublished: Boolean,
-	website: mongoose.ObjectId
+	website: [{ type: mongoose.ObjectId, ref: 'Website' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

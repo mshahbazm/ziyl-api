@@ -13,7 +13,7 @@ const schema = new mongoSchema({
 	description: String,
 	tags: [mongoose.ObjectId],
 	client: mongoose.ObjectId,
-	website: mongoose.ObjectId
+	website: [{ type: mongoose.ObjectId, ref: 'Website' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

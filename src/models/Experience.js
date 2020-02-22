@@ -19,7 +19,7 @@ const schema = new mongoSchema({
 	is_current: String,
 	description: String,
 	isPublished: Boolean,
-	owner: mongoose.ObjectId /*user id*/
+	owner: [{ type: mongoose.ObjectId, ref: 'User' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

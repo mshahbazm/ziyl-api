@@ -18,7 +18,7 @@ const schema = new mongoSchema({
 	isPublished: Boolean,
 	meta_title: String,
 	meta_description: String,
-	website: mongoose.ObjectId
+	website: [{ type: mongoose.ObjectId, ref: 'Website' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

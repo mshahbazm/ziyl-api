@@ -4,5 +4,6 @@ module.exports = {
 	keepAlive: true,
 	keepAliveInitialDelay: 300000,
 	useNewUrlParser: true,
-	useUnifiedTopology: true
-}
+	useUnifiedTopology: true,
+	useCreateIndex: true
+};

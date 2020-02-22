@@ -9,7 +9,7 @@ const schema = new mongoSchema({
 	},
 	reviewer: mongoose.ObjectId,
 	isPublished: Boolean,
-	website: mongoose.ObjectId
+	website: [{ type: mongoose.ObjectId, ref: 'Website' }]
 },{timestamps: true});
 
 schema.plugin(uniqueValidator);

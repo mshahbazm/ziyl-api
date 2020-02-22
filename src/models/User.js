@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'),
 	uniqueValidator = require('mongoose-unique-validator'),
-	bcrypt = require('bcrypt-nodejs'),
+	bcrypt = require('bcryptjs'),
 	Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -23,23 +23,12 @@ const UserSchema = new Schema({
 	country: String
 },{timestamps: true});
 
-UserSchema.methods.toJSON = function  () {
-	var usr = this.toObject();
-	delete usr.password;
-	return usr;
-};
 
-UserSchema.pre('save',function (next) {
-	var user = this;
+UserSchema.pre('save', async  (next) => {
+	const user = this;
 	if(!user.isModified('password')) return next();
-	bcrypt.genSalt(10,function (err, salt) {
-		if (err) return next(err);
-		bcrypt.hash(user.password,salt,null,function (err, hash) {
-			if (err) return next(err);
-			user.password = hash;
-			next();
-		});
-	});
+	user.password = await bcrypt.hash(user.password, 10);
+	next();
 });
 
 UserSchema.plugin(uniqueValidator);
